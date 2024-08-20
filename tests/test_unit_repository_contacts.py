@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 
 from src.database.models import Contact, User
 from src.repository.contacts import get_all_contacts, get_contact_by_id, get_contact_, delete_contact, \
-    update_contact_by_id
+    update_contact_by_id, create_contact, get_upcoming_birthdays
 from src.schemas import ContactModel
 
 
@@ -15,12 +15,12 @@ class TestContacts(unittest.IsolatedAsyncioTestCase):
         self.session = MagicMock(spec=Session)
         self.user = User(id=9, name="I", email="I@gmail.com", password="123", update_token=None, email_confirmed=True)
         self.contacts = [Contact(id=1, name="John", soname="Wick", email="John.Wick@gmail.com", phone="123456789",
-                                 birthday=datetime.date(1980, 1, 1), info=None, user_id=9),
+                                 birthday=datetime.date(1980, 8, 22), info=None, user_id=9),
                          Contact(id=2, name="Ozzy", soname="Osborn", email="Ozzy.Osborn@gmail.com", phone="6666666666",
                                  birthday=datetime.date(1968, 9, 1), info=None, user_id=9)
                          ]
         self.contact_model = ContactModel(name="John", soname="Wick", email="John.Wick@gmail.com", phone="123456789",
-                                          birthday=datetime.date(1980, 1, 1), info=None)
+                                          birthday=datetime.date(1980, 8, 22), info="")
 
     def tearDown(self):
         del self.contacts
@@ -89,6 +89,16 @@ class TestContacts(unittest.IsolatedAsyncioTestCase):
         self.session.query().filter_by().first.return_value = contact
         result3 = await update_contact_by_id(self.session, 1, self.contact_model, user=self.user)
         self.assertEqual(result3, contact)
+
+    async def test_create_contact(self):
+        result3 = await create_contact(self.session, self.contact_model, user=self.user)
+        assert self.contact_model.name == result3.name
+        self.assertTrue(hasattr(result3, "id"))
+
+    async def test_get_upcoming_birthdays(self):
+        self.session.query().filter().all.return_value = self.contacts
+        result3 = await get_upcoming_birthdays(self.session, user=self.user)
+        self.assertEqual(result3, [self.contacts[0]])
 
 
 if __name__ == "__main__":
