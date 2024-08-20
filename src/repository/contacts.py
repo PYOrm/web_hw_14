@@ -1,4 +1,3 @@
-
 import datetime
 from typing import Type
 
@@ -11,6 +10,7 @@ from src.schemas import ContactModel
 Access to contacts  
 """
 
+
 async def get_all_contacts(db: Session, user: User, skip: int = 0, limit: int = 100) -> list[Type[Contact]]:
     """
     Get all contacts for user
@@ -22,7 +22,8 @@ async def get_all_contacts(db: Session, user: User, skip: int = 0, limit: int = 
     :return: contacts for given user
     :rtype: list[Contacts]
     """
-    return db.query(Contact).filter_by(user_id=user.id).offset(skip).limit(limit).all()
+    result = db.query(Contact).filter_by(user_id=user.id).offset(skip).limit(limit).all()
+    return result
 
 
 async def get_contact_by_id(db: Session, contact_id: int, user: User) -> Type[Contact] | None:
@@ -142,4 +143,3 @@ async def get_upcoming_birthdays(db: Session, user: User) -> list[Type[Contact]]
         if (birthday_date_in_year - today).days <= 7:
             nearest_birthdays.append(contact)
     return nearest_birthdays
-

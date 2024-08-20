@@ -56,11 +56,14 @@ class User(Base):
     avatar = Column(String, default=None)
     email_confirmed = Column(Boolean, default=False)
 
-    def __init__(self, name, email, password, update_token=None):
+    def __init__(self, name, email, password, update_token=None, id=0, avatar=None, email_confirmed=False):
         self.name = name
         self.email = email
         self.password = password
         self.update_token = update_token
+        self.id = id
+        self.avatar = avatar
+        self.email_confirmed = email_confirmed
 
     def __str__(self):
         return f"{self.name}_{self.email}_{self.password}_{self.update_token}_{self.id}"
