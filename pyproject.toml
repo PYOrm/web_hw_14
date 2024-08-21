@@ -21,10 +21,15 @@ redis = "^5.0.8"
 fastapi-limiter = "^0.1.6"
 crispy-bootstrap4 = "^2024.1"
 bson = "^0.5.10"
+pytest = "^8.3.2"
 
 
 [tool.poetry.group.dev.dependencies]
 sphinx = "^8.0.2"
+
+
+[tool.poetry.group.test.dependencies]
+pytest = "^8.3.2"
 
 [build-system]
 requires = ["poetry-core"]
